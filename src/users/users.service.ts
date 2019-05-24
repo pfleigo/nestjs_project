@@ -14,10 +14,10 @@ export class UsersService {
     return await this.usersRepository.find();
   }
 
-  async getUser(_id: number): Promise<User[]> {
+  async getUser(id: number): Promise<User[]> {
     return await this.usersRepository.find({
-      select: ['fullName', 'birthday', 'isActive'],
-      where: [{ id: _id }],
+      select: ['name', 'id', 'email'],
+      where: [{ id }],
     });
   }
 
@@ -31,5 +31,13 @@ export class UsersService {
 
   async deleteUser(user: User): Promise<DeleteResult> {
     return await this.usersRepository.delete(user);
+  }
+
+  async findByEmail(email: string): Promise<User> {
+    return await this.usersRepository.findOne({
+      where: {
+        email,
+      },
+    });
   }
 }
