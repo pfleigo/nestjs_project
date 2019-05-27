@@ -1,7 +1,16 @@
-import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  BeforeInsert,
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
+import { Posting } from 'src/post/post.entity';
 
 @Entity()
 export class User {
@@ -16,6 +25,15 @@ export class User {
 
   @Column({ default: '' })
   email: string;
+
+  @CreateDateColumn()
+  created: Date;
+
+  @UpdateDateColumn()
+  updated: Date;
+
+  @OneToMany(type => Posting, post => post.author)
+  posts: Posting[];
 
   @BeforeInsert()
   async hashPassword() {

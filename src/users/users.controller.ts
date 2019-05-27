@@ -7,13 +7,11 @@ import {
   Delete,
   Param,
   UsePipes,
-  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
 import { UserDTO } from './user.dto';
 import { ValidationPipe } from 'src/shared/validation.pipe';
-import { AuthGuard } from 'src/shared/auth.guard';
 
 @Controller()
 export class UsersController {
@@ -32,7 +30,6 @@ export class UsersController {
   }
 
   @Get('users')
-  @UseGuards(new AuthGuard())
   index(): Promise<User[]> {
     return this.service.getUsers();
   }
