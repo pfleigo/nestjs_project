@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsString, IsBoolean } from 'class-validator';
 
 export class PostDTO {
   @IsString()
@@ -6,4 +6,7 @@ export class PostDTO {
 
   @IsString()
   readonly description: string;
+
+  @IsBoolean()
+  readonly public: boolean;
 }

@@ -19,6 +19,9 @@ export class Posting {
   @Column()
   description: string;
 
+  @Column({ default: true })
+  public: boolean;
+
   @CreateDateColumn()
   created: Date;
 

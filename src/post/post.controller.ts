@@ -17,6 +17,7 @@ import { PostsService } from './post.service';
 import { User } from 'src/users/user.decorator';
 import { diskStorage } from 'multer';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { PostGuard } from 'src/shared/post.guard';
 
 @Controller('posts')
 export class PostsController {
@@ -31,8 +32,8 @@ export class PostsController {
 
   @Get()
   @UseGuards(new AuthGuard())
-  index(): Promise<Posting[]> {
-    return this.postsService.getPosts();
+  index(@User('id') id): Promise<Posting[]> {
+    return this.postsService.getPosts(id);
   }
 
   @Get(':id')

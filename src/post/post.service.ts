@@ -22,8 +22,9 @@ export class PostsService {
     return { ...post, author: post.author };
   }
 
-  async getPosts(): Promise<any> {
-    return await this.postsRepository.find({ relations: ['author'] });
+  async getPosts(userId): Promise<any> {
+    const posts = await this.postsRepository.find({ relations: ['author'] });
+    return posts.filter(post => post.public || post.author.id === userId);
   }
 
   async getPost(id: number): Promise<Posting[]> {
