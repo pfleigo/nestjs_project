@@ -40,4 +40,9 @@ export class PostsService {
   async deletePost(post: Posting): Promise<DeleteResult> {
     return await this.postsRepository.delete(post);
   }
+
+  async addImage(postId: number, imageUrl: string) {
+    console.log(postId, imageUrl);
+    return await this.postsRepository.update(postId, { image: imageUrl });
+  }
 }
