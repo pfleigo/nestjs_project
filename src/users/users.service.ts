@@ -2,7 +2,10 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { Repository, UpdateResult, DeleteResult } from 'typeorm';
 import { User } from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserDTO } from './user.dto';
+import { UserDTO } from '../dto/user.dto';
+import * as nodemailer from 'nodemailer';
+
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class UsersService {
@@ -12,8 +15,12 @@ export class UsersService {
   ) {}
 
   async login(data: UserDTO) {
-    const { name, password } = data;
-    const user = await this.usersRepository.findOne({ where: { name } });
+    const { email, password } = data;
+    const user = await this.usersRepository.findOne({ where: { email } });
+
+    if (!user.confirmed) {
+      throw new HttpException('User not confirmed', HttpStatus.BAD_REQUEST);
+    }
     if (!user || !(await user.comparePassword(password))) {
       throw new HttpException(
         'Invalid username/password',
@@ -24,13 +31,39 @@ export class UsersService {
   }
 
   async register(data: UserDTO) {
-    const { name } = data;
-    let user = await this.usersRepository.findOne({ where: { name } });
+    const { email } = data;
+    let user = await this.usersRepository.findOne({ where: { email } });
     if (user) {
       throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
     }
     user = await this.usersRepository.create(data);
     await this.usersRepository.save(user);
+
+    jwt.sign(
+      {
+        user,
+      },
+      'EMAIL_SECRET',
+      {
+        expiresIn: '1d',
+      },
+      (err, emailToken) => {
+        const url = `http://localhost:3000/confirmation/${emailToken}`;
+        const transporter = nodemailer.createTransport({
+          host: 'smtp.office365.com',
+          port: 587,
+          auth: {
+            user: 'alexander.pflueger@hybridheroes.de',
+            pass: '!Rockotr3i',
+          },
+        });
+        transporter.sendMail({
+          to: user.email,
+          subject: 'Confirm email',
+          html: `Please confirm your email: ${url}`,
+        });
+      },
+    );
 
     return user.toResponseObject();
   }
@@ -42,7 +75,7 @@ export class UsersService {
 
   async getUser(id: number): Promise<User[]> {
     return await this.usersRepository.find({
-      select: ['name', 'id', 'email'],
+      select: ['id', 'email'],
       where: [{ id }],
     });
   }
@@ -61,5 +94,12 @@ export class UsersService {
         email,
       },
     });
+  }
+
+  async confirmUser(token: string) {
+    const {
+      user: { id },
+    } = jwt.verify(token, 'EMAIL_SECRET');
+    return await this.usersRepository.update(id, { confirmed: true });
   }
 }

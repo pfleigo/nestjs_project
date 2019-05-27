@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
-import { UserDTO } from './user.dto';
+import { UserDTO } from '../dto/user.dto';
 import { ValidationPipe } from 'src/shared/validation.pipe';
 
 @Controller()
@@ -27,6 +27,11 @@ export class UsersController {
   @UsePipes(new ValidationPipe())
   register(@Body() data: UserDTO) {
     return this.service.register(data);
+  }
+
+  @Get('confirmation/:token')
+  confirm(@Param('token') token) {
+    return this.service.confirmUser(token);
   }
 
   @Get('users')

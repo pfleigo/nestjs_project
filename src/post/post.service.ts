@@ -3,7 +3,7 @@ import { Repository, UpdateResult, DeleteResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Posting } from './post.entity';
 import { User } from 'src/users/user.entity';
-import { PostDTO } from './post.dto';
+import { PostDTO } from '../dto/post.dto';
 
 @Injectable()
 export class PostsService {

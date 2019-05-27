@@ -17,7 +17,7 @@ import { PostsService } from './post.service';
 import { User } from 'src/users/user.decorator';
 import { diskStorage } from 'multer';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { PostDTO } from './post.dto';
+import { PostDTO } from '../dto/post.dto';
 
 @Controller('posts')
 export class PostsController {

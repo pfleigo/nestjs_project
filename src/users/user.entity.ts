@@ -20,16 +20,16 @@ export class User {
   id: number;
 
   @ApiModelProperty()
-  @Column({ length: 25 })
-  name: string;
-
-  @ApiModelProperty()
   @Column({ default: '' })
   avatar: string;
 
   @ApiModelProperty()
   @Column({ default: '' })
   email: string;
+
+  @ApiModelProperty()
+  @Column({ default: false })
+  confirmed: boolean;
 
   @CreateDateColumn()
   created: Date;
@@ -49,8 +49,8 @@ export class User {
   password: string;
 
   toResponseObject() {
-    const { id, name, avatar, email, token } = this;
-    const responseObject = { id, name, avatar, email, token };
+    const { id, avatar, email, token, confirmed } = this;
+    const responseObject = { id, avatar, email, token, confirmed };
     return responseObject;
   }
 
@@ -59,11 +59,11 @@ export class User {
   }
 
   private get token() {
-    const { id, name } = this;
+    const { id, email } = this;
     return jwt.sign(
       {
         id,
-        name,
+        email,
       },
       process.env.SECRET,
       { expiresIn: '7d' },
