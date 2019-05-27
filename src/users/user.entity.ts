@@ -11,18 +11,23 @@ import {
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import { Posting } from 'src/post/post.entity';
+import { ApiModelProperty } from '@nestjs/swagger';
 
 @Entity()
 export class User {
+  @ApiModelProperty()
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ApiModelProperty()
   @Column({ length: 25 })
   name: string;
 
+  @ApiModelProperty()
   @Column({ default: '' })
   avatar: string;
 
+  @ApiModelProperty()
   @Column({ default: '' })
   email: string;
 
@@ -32,6 +37,7 @@ export class User {
   @UpdateDateColumn()
   updated: Date;
 
+  @ApiModelProperty()
   @OneToMany(type => Posting, post => post.author)
   posts: Posting[];
 

@@ -17,7 +17,7 @@ import { PostsService } from './post.service';
 import { User } from 'src/users/user.decorator';
 import { diskStorage } from 'multer';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { PostGuard } from 'src/shared/post.guard';
+import { PostDTO } from './post.dto';
 
 @Controller('posts')
 export class PostsController {
@@ -26,7 +26,7 @@ export class PostsController {
 
   @Post()
   @UseGuards(new AuthGuard())
-  createPostfix(@User('id') id, @Body() data) {
+  createPost(@User('id') id, @Body() data: PostDTO) {
     return this.postsService.create(id, data);
   }
 
