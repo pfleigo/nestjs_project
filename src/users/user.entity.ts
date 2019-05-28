@@ -20,8 +20,8 @@ export class User {
   id: number;
 
   @ApiModelProperty()
-  @Column({ default: '' })
-  avatar: string;
+  @Column()
+  username: string;
 
   @ApiModelProperty()
   @Column({ default: '' })
@@ -49,8 +49,8 @@ export class User {
   password: string;
 
   toResponseObject() {
-    const { id, avatar, email, token, confirmed } = this;
-    const responseObject = { id, avatar, email, token, confirmed };
+    const { id, username, email, token, confirmed } = this;
+    const responseObject = { id, username, email, token, confirmed };
     return responseObject;
   }
 

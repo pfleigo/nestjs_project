@@ -25,7 +25,7 @@ export class PostsController {
   constructor(private postsService: PostsService) {}
 
   @Post()
-  @UseGuards(new AuthGuard())
+  @UseGuards(new AuthGuard()) // checks the validity of the token
   createPost(@User('id') id, @Body() data: PostDTO) {
     return this.postsService.create(id, data);
   }
@@ -56,6 +56,7 @@ export class PostsController {
   @Post(':id/image')
   @UseInterceptors(
     FileInterceptor('image', {
+      // image = property name in the request body
       storage: diskStorage({
         destination: './images',
         filename: (req, file, cb) => {

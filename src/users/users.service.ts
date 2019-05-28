@@ -3,19 +3,23 @@ import { Repository, UpdateResult, DeleteResult } from 'typeorm';
 import { User } from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserDTO } from '../dto/user.dto';
-import * as nodemailer from 'nodemailer';
 
+import * as nodemailer from 'nodemailer';
 import * as jwt from 'jsonwebtoken';
+import { LoginDTO } from 'src/dto/login.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
+    // take in the database table
     @InjectRepository(User)
     private usersRepository: Repository<User>,
   ) {}
 
-  async login(data: UserDTO) {
+  async login(data: LoginDTO) {
     const { email, password } = data;
+
+    // communicate with database
     const user = await this.usersRepository.findOne({ where: { email } });
 
     if (!user.confirmed) {
@@ -36,9 +40,12 @@ export class UsersService {
     if (user) {
       throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
     }
+    // creates an new instance
     user = await this.usersRepository.create(data);
+    // saves it to the database
     await this.usersRepository.save(user);
 
+    // email confirmation logic
     jwt.sign(
       {
         user,
@@ -53,8 +60,8 @@ export class UsersService {
           host: 'smtp.office365.com',
           port: 587,
           auth: {
-            user: 'alexander.pflueger@hybridheroes.de',
-            pass: '!Rockotr3i',
+            user: 'team@hybridheroes.de',
+            pass: 'HEROES...',
           },
         });
         transporter.sendMail({

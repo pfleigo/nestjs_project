@@ -9,4 +9,8 @@ export class UserDTO {
   @ApiModelProperty()
   @IsNotEmpty()
   password: string;
+
+  @ApiModelProperty()
+  @IsNotEmpty()
+  username: string;
 }
