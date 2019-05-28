@@ -44,7 +44,6 @@ export class PostsController {
   @Put(':id')
   async update(@Param('id') id, @Body() post: Posting): Promise<any> {
     post.id = Number(id);
-    console.log('Update #' + post.id);
     return this.postsService.updatePost(post);
   }
 

@@ -43,7 +43,6 @@ export class PostsService {
   }
 
   async addImage(postId: number, imageUrl: string) {
-    console.log(postId, imageUrl);
     return await this.postsRepository.update(postId, { image: imageUrl });
   }
 }
